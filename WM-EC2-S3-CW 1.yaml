@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Create an IAM role with multiple managed policies for EC2 instances
+
+Resources:
+  EC2Role:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: 'EC2-CW-SSM-Role'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Path: /
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/AmazonEC2FullAccess'
+        - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
+        - 'arn:aws:iam::aws:policy/CloudWatchFullAccess'
+      Policies:
+        - PolicyName: SSM-Custom
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: SSMCustom
+                Effect: Allow
+                Action:
+                  - cloudwatch:PutMetricData
+                  - ds:CreateComputer
+                  - ds:DescribeDirectories
+                  - ec2:DescribeInstanceStatus
+                  - logs:*
+                  - ssm:*
+                  - ec2messages:*
+                Resource: '*'
+              - Sid: newpolicy
+                Effect: Allow
+                Action:
+                  - iam:CreateServiceLinkedRole
+                Resource: 'arn:aws:iam::*:role/aws-service-role/ssm.amazonaws.com/AWSServiceRoleForAmazonSSM*'
+  InstanceProfile:
+    Type: 'AWS::IAM::InstanceProfile'
+    Properties:
+      Path: /
+      Roles:
+        - !Ref EC2Role
+Outputs:
+  EC2RoleArn:
+    Description: 'Name of the IAM role for EC2'
+    Value: !GetAtt EC2Role.Arn
+  InstanceProfileArn:
+    Description: 'Name of the IAM role for EC2'
+    Value: !GetAtt InstanceProfile.Arn
+  EC2rolename:
+    Description: 'Name of the IAM Role'
+    Value: !Ref EC2Role
