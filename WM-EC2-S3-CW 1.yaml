@@ -33,6 +33,7 @@ Resources:
                   - logs:*
                   - ssm:*
                   - ec2messages:*
+                  - rds*
                 Resource: '*'
               - Sid: newpolicy
                 Effect: Allow
