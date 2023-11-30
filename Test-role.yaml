@@ -1,0 +1,185 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: CWMAutomationRole Role Stack by Workmates
+Parameters: {}
+Resources:
+  CWMAutomationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: 'CWMAutomationRole'
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - 'arn:aws:iam::464315288610:root'
+                - 'arn:aws:iam::743312143731:root'
+            Action:
+              - sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/ReadOnlyAccess
+      Policies:
+        - PolicyName: CWMAutomationRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: AllowIAMAccess
+                Effect: Allow
+                Action:
+                  - 'iam:Attach*'
+                  - 'iam:Get*'
+                  - 'iam:List*'
+                  - 'iam:Tag*'
+                  - 'iam:Remove*'
+                  - 'iam:Update*'
+                  - 'iam:Add*'
+                  - 'iam:Create*'
+                  - 'iam:Detach*'
+                  - 'iam:Set*'
+                  - 'iam:Put*'
+                  - 'iam:UploadSSHPublicKey'
+                  - 'iam:UntagPolicy'
+                  - 'iam:DeletePolicyVersion'
+                  - 'iam:ChangePassword'
+                  - 'iam:PassRole'
+                Resource: '*'
+  CWMSessionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: 'CWMSessionRole'
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - 'arn:aws:iam::464315288610:root'
+                - 'arn:aws:iam::743312143731:root'
+            Action:
+              - sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/ReadOnlyAccess
+        - arn:aws:iam::aws:policy/job-function/Billing
+      Policies:
+        - PolicyName: CWMSessionRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: AllowedOnlySSMCostExplorer
+                Effect: Allow
+                Action:
+                  - 'ssm:ResumeSession'
+                  - 'ce:UntagResource'
+                  - 'ssm:TerminateSession'
+                  - 'ssm:StartSession'
+                  - 'ce:List*'
+                  - 'ce:StartSavingsPlansPurchaseRecommendationGeneration'
+                  - 'ssm-guiconnect:*'
+                  - 'ce:Describe*'
+                  - 'ce:Create*'
+                  - 'ssm:DescribeSessions'
+                  - 'ce:TagResource'
+                  - 'ce:Update*'
+                  - 'ce:ProvideAnomalyFeedback'
+                  - 'ssm:List*'
+                  - 'ssm:Get*'
+                  - 'ssm:Describe*'
+                  - 'ce:Get*'
+                  - 'cur:DescribeReportDefinitions'
+                  - 'cur:PutReportDefinition'
+                  - 'cur:ModifyReportDefinition'
+                  - 'cur:DeleteReportDefinition'
+                  - 'compute-optimizer:*'
+                Resource: '*'
+  CWMCloudFormationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: 'CWMCloudFormationRole'
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - 'arn:aws:iam::464315288610:root'
+                - 'arn:aws:iam::743312143731:root'
+            Action:
+              - sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AdministratorAccess
+  CWMManagedInstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: 'CWMManagedInstanceRole'
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - 'arn:aws:iam::464315288610:root'
+                - 'arn:aws:iam::743312143731:root'
+              Service:
+                - 'ec2.amazonaws.com'
+            Action:
+              - sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/ReadOnlyAccess
+      Policies:
+        - PolicyName: CWMManagedInstanceRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: AllowOnlyCWSSM
+                Effect: Allow
+                Action:
+                  - 'cloudwatch:PutMetricData'
+                  - 'cloudwatch:GetMetricStatistics'
+                  - 'cloudwatch:Describe*'
+                  - 'cloudwatch:ListMetrics'
+                  - 'autoscaling:Describe*'
+                  - 'ec2:Describe*'
+                  - 'ec2messages:DeleteMessage'
+                  - 'ec2messages:GetEndpoint'
+                  - 'ec2messages:FailMessage'
+                  - 'ec2messages:AcknowledgeMessage'
+                  - 'ec2messages:SendReply'
+                  - 'ec2messages:GetMessages'
+                  - 'elasticloadbalancing:Describe*'
+                  - 'kms:Get*'
+                  - 'kms:List*'
+                  - 'kms:Describe*'
+                  - 'kms:Decrypt'
+                  - 'kms:Encrypt'
+                  - 'ssm-guiconnect:*'
+                  - 'kms:Sign'
+                  - 'logs:Create*'
+                  - 'logs:Describe*'
+                  - 'logs:PutLogEvents'
+                  - 'ssm:Describe*'
+                  - 'ssm:List*'
+                  - 'ssm:Get*'
+                  - 'ssmmessages:CreateDataChannel'
+                  - 'ssmmessages:OpenDataChannel'
+                  - 'ssmmessages:OpenControlChannel'
+                  - 'ssmmessages:CreateControlChannel'
+                  - 's3:ListAllMyBuckets'
+                  - 's3:PutObject'
+                  - 's3:PutObjectAcl'
+                  - 's3:GetObject'
+                  - 's3:GetObjectAcl'
+                Resource: '*'
+                Condition:
+                  StringEquals:
+                    'aws:RequestedRegion':
+                      - ap-south-1
+  InstanceProfile:
+    Type: 'AWS::IAM::InstanceProfile'
+    Properties:
+      Path: /
+      Roles:
+        - !Ref CWMManagedInstanceRole
